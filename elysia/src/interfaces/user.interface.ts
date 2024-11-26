@@ -1,7 +1,8 @@
 import mongoose from "mongoose";
-import { register, user } from "../account.type";
+import { register } from "../account.type";
+import { user } from "../user.type";
 
-type userWithOutID = Omit<user,`id`>
+type userWithOutID = Omit<user,'id'>
 
 export interface IUSERDocument extends mongoose.Document, userWithOutID {
     password_hash: string
