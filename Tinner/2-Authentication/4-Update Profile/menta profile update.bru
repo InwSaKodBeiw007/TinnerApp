@@ -1,0 +1,23 @@
+meta {
+  name: menta profile update
+  type: http
+  seq: 1
+}
+
+patch {
+  url: {{tinner_url}}/user/
+  body: json
+  auth: none
+}
+
+headers {
+  authorization: Bearer {{menta_token}}
+}
+
+body:json {
+  {
+    "display_name": "Mentalasama",
+    "looking_for": "female",
+    "introduction": "Code Pass Dai Ngai"
+  }
+}

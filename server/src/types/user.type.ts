@@ -1,16 +1,18 @@
-import Elysia, { Static, t } from "elysia"
+import Elysia, { t, Static } from "elysia"
 import { _pagination, CreatePagination } from "./pagination.type"
+import { _photo } from "./photo.type"
 
 export const _register = t.Object({
     username: t.String(),
     password: t.String(),
     display_name: t.String(),
     date_of_birth: t.Optional(t.Date()),
-    looking_for: t.Union([t.Literal('male'),t.Literal('female'),t.Literal('all')]),
-    gender:t.Optional( t.Union([t.Literal('male'),t.Literal('female'),t.Literal('all')]))
+    looking_for: t.Union([t.Literal('male'), t.Literal('female'), t.Literal('all')]),
+    gender: t.Optional(t.Union([t.Literal('male'), t.Literal('female'), t.Literal('all')]))
 })
+
 export const _profile = t.Object({
-    ...t.Omit(_register,['password']).properties,
+    ...t.Omit(_register, ['password']).properties,
     id: t.String(),
     introduction: t.Optional(t.String()),
     interest: t.Optional(t.String()),
@@ -18,17 +20,20 @@ export const _profile = t.Object({
     age: t.Optional(t.String()),
     last_active: t.Optional(t.Date()),
     created_at: t.Optional(t.Date()),
-    updated_at: t.Optional(t.Date())
+    updated_at: t.Optional(t.Date()),
 
     //todo: implement upload feature
-    //photo: photo_id[]
+    photos: t.Optional(t.Array(_photo))
 })
+
 
 export const _user = t.Object({
     ..._profile.properties,
     //todo: implement like feature
     //followers: profile[]
     //followering: profile[]
+    followers: t.Optional(t.Array(t.Union([t.Partial(_profile), t.String()]))),
+    following: t.Optional(t.Array(t.Union([t.Partial(_profile), t.String()]))),
 })
 
 const _userPagination = t.Object({
@@ -36,16 +41,18 @@ const _userPagination = t.Object({
     username: t.Optional(t.String()),
     min_age: t.Optional(t.Number()),
     max_age: t.Optional(t.Number()),
-    looking_for: t.Optional(t.Union([t.Literal('male'),t.Literal('female'),t.Literal('all')])),
+    looking_for: t.Optional(t.Union([t.Literal('male'), t.Literal('female'), t.Literal('all')])),
+    gender: t.Optional(t.Union([t.Literal('male'), t.Literal('female'), t.Literal('all')]))
 })
-export const _updateProfile = t.Omit(_profile,['id','username','updated_at','created_at','last_active','gender','age'])
-export const _userPaginator = CreatePagination(_user,_userPagination)
+export const _updateProfile = t.Omit(_profile, ['id', 'username', 'updated_at', 'created_at', 'last_active', 'age'])
+export const _userPaginator = CreatePagination(_user, _userPagination)
 
 export const UserDto = new Elysia().model({
     pagination: t.Optional(_userPagination),
     updateProfile: _updateProfile,
     users: _userPaginator,
-    user: _user
+    user: _user,
+    target_id: t.Object({ target_id: t.String() })
 })
 
 export type updateProfile = Static<typeof _updateProfile>

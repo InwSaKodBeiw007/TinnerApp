@@ -1,0 +1,21 @@
+meta {
+  name: menta get - gender
+  type: http
+  seq: 6
+}
+
+get {
+  url: {{tinner_url}}/user/?pageSize=2&currentPage=1&gender=male
+  body: none
+  auth: none
+}
+
+params:query {
+  pageSize: 2
+  currentPage: 1
+  gender: male
+}
+
+headers {
+  authorization: Bearer {{menta_token}}
+}

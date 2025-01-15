@@ -1,10 +1,22 @@
-import { login, register } from "../account.type";
 import { User } from "../Model/user.model";
-import { user } from "../user.type";
+import { login, register } from "../types/account.type";
+import { user } from "../types/user.type";
 
 export const AccountService = {
     login: async function(loginData: login): Promise<user>{
-        const user = await User.findOne({username:loginData.username}).exec()
+        const user = await User.findOne({username:loginData.username})
+        .populate("photos")
+
+        .populate({
+            path:"following",
+            select: "_id"
+        })
+        .populate({
+            path:"followers",
+            select: "_id"
+        })
+
+        .exec()
         if (!user)
             throw new Error("This user has no longer in this world")
         const verifyPassword = await user.verifyPassword(loginData.password)
